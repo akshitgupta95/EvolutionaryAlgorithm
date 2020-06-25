@@ -1,3 +1,4 @@
+
 from jmetal.algorithm.multiobjective.spea2 import SPEA2
 from jmetal.operator import SPXCrossover, BitFlipMutation
 from jmetal.problem import ZDT1
@@ -44,52 +45,87 @@ def oneRun(problemType,numberOfitems:int, population_size:int,maxEvaluations:int
     objective1=-1/utopianPoint[0]*np.array([solution.objectives[0] for solution in front])
     objective2=-1/utopianPoint[1]*np.array([solution.objectives[1] for solution in front])
     # print(calculateHypervolume(list(zip(objective1,objective2))))
-    # plt.scatter(objective1, objective2)
-    # plt.title('%s_%d'%(problemType,numberOfitems))
-    # plt.xlabel("Objective 1")
-    # plt.ylabel("Objective 2")
-    # plt.savefig('%s_%d'%(problemType,numberOfitems))
+    fig=plt.figure(numberOfitems+3)
+    plt.scatter(objective1, objective2)
+    plt.title('%s_%d'%(problemType,numberOfitems))
+    plt.xlabel("Objective 1")
+    plt.ylabel("Objective 2")
+    plt.savefig('%s_%d'%(problemType,numberOfitems))
     return HVbyGen,IGDbyGen
 # plot_front = Plot(title='Pareto front approximation', axis_labels=['x', 'y'])
 # plot_front.plot(front, label='SPEA2-ZDT1')
 def main():
     
-    numberOfRuns=5
+    numberOfRuns=2
     problemType="dense"
-    numberOfItems=20
-    max_evaluations=1000
-    populationSizes=np.array([40,80,160])
-    
-    fig, ax = plt.subplots()
-    
-    for popSize in populationSizes:
-        print("populationSize: ",popSize)
-        numberOfEvaluations=np.arange(popSize, max_evaluations, popSize)
-        print(numberOfEvaluations.shape)
-        print(numberOfEvaluations)
-        AvgHV=[]
-        AvgIGD=[] 
-        for i in range(numberOfRuns):
-            print("run: ",i)
-            HVSigleRun,IGDRun=oneRun(problemType=problemType,numberOfitems=numberOfItems,population_size=popSize,maxEvaluations=max_evaluations)
-            AvgHV.append(HVSigleRun)
-            AvgIGD.append(IGDRun)
-        HVresult=np.mean(AvgHV, axis=0)
-        HVresult=1-HVresult
-        print(HVresult)
-        if(popSize==40):
-            ax.loglog(numberOfEvaluations,HVresult, basex=2, basey=2,label='Population Size=40',c='r')
-        if(popSize==80):
-            ax.loglog(numberOfEvaluations,HVresult, basex=2, basey=2,label='Population Size=80',c='b')
-        if(popSize==160):
-            ax.loglog(numberOfEvaluations,HVresult, basex=2, basey=2,label='Population Size=160',c='g')
-    
-    ax.xaxis.set_major_formatter(mtick.FormatStrFormatter('%d'))
-    ax.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.3f'))
-    plt.xlabel('Number of Evaluations')
-    plt.ylabel('1 minus hypervolume')
-    ax.legend()
-    plt.savefig("comparison")
+    numberOfItemsArray=np.array([20,80,320])
+    max_evaluations=50000
+    populationSizes=np.array([4,16,64,128,256])
+    # fig, ax = plt.subplots()
+    figureNumber=0
+    for numberOfItems in numberOfItemsArray:
+        figureNumber=numberOfItems
+        for popSize in populationSizes:
+            
+            print("populationSize: ",popSize)
+            numberOfEvaluations=np.arange(popSize, max_evaluations, popSize)
+            AvgHV=[]
+            AvgIGD=[] 
+            for i in range(numberOfRuns):
+                print("run: ",i)
+                HVSigleRun,IGDRun=oneRun(problemType=problemType,numberOfitems=numberOfItems,population_size=popSize,maxEvaluations=max_evaluations)
+                AvgHV.append(HVSigleRun)
+                AvgIGD.append(IGDRun)
+            HVresult=np.mean(AvgHV, axis=0)
+            HVresult=1-HVresult
+            IGDResult=np.mean(AvgIGD, axis=0)
+            if(popSize==4):
+                plt.figure(figureNumber)
+                plt.loglog(numberOfEvaluations,HVresult, basex=2, basey=2,label='Population Size=4',c='r')
+                plt.figure(figureNumber+1)
+                plt.loglog(numberOfEvaluations,IGDResult, basex=2, basey=2,label='Population Size=4',c='r')
+            if(popSize==16):
+                plt.figure(figureNumber)
+                plt.loglog(numberOfEvaluations,HVresult, basex=2, basey=2,label='Population Size=16',c='b')
+                plt.figure(figureNumber+1)
+                plt.loglog(numberOfEvaluations,IGDResult, basex=2, basey=2,label='Population Size=16',c='b')
+            if(popSize==64):
+                plt.figure(figureNumber)
+                plt.loglog(numberOfEvaluations,HVresult, basex=2, basey=2,label='Population Size=64',c='g')
+                plt.figure(figureNumber+1)
+                plt.loglog(numberOfEvaluations,IGDResult, basex=2, basey=2,label='Population Size=64',c='g')
+            if(popSize==128):
+                plt.figure(figureNumber)
+                plt.loglog(numberOfEvaluations,HVresult, basex=2, basey=2,label='Population Size=128',c='y')
+                plt.figure(figureNumber+1)
+                plt.loglog(numberOfEvaluations,IGDResult, basex=2, basey=2,label='Population Size=128',c='y')
+            if(popSize==256):
+                plt.figure(figureNumber)
+                plt.loglog(numberOfEvaluations,HVresult, basex=2, basey=2,label='Population Size=256',c='m')
+                plt.figure(figureNumber+1)
+                plt.loglog(numberOfEvaluations,IGDResult, basex=2, basey=2,label='Population Size=256',c='m')
+        # plt.get_yaxis().set_major_formatter(mtick.FormatStrFormatter('%.3f'))
+        # plt.xticks(np.arange(popSize, max_evaluations, popSize))
+        fig=plt.figure(figureNumber)
+        ax=fig.axes
+        ax[0].xaxis.set_major_formatter(mtick.FormatStrFormatter('%d'))
+        ax[0].yaxis.set_major_formatter(mtick.FormatStrFormatter('%.3f'))
+        plt.xlabel('Number of Evaluations')
+        plt.ylabel('1 minus hypervolume')
+        ax[0].legend()
+        plt.title('%s_%d'%(problemType,numberOfItems))
+        plt.savefig("comparison_%d_HV"%(numberOfItems))
+
+        fig=plt.figure(figureNumber+1)
+        ax=fig.axes
+        ax[0].xaxis.set_major_formatter(mtick.FormatStrFormatter('%d'))
+        ax[0].yaxis.set_major_formatter(mtick.FormatStrFormatter('%.1f'))
+        plt.xlabel('Number of Evaluations')
+        plt.ylabel('IGD')
+        ax[0].legend()
+        plt.title('%s_%d'%(problemType,numberOfItems))
+        plt.savefig("comparison_%d_IGD"%(numberOfItems))
+        
 
 if __name__=="__main__": 
     main()     
