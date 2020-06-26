@@ -27,7 +27,7 @@ def oneRun(problemType,numberOfitems:int, population_size:int,maxEvaluations:int
     algorithm = MyAlgorithm(
         problem=problem,
         population_size=population_size,
-        mutation=BitFlipMutation(probability=1.0 / problem.number_of_bits),
+        mutation=BitFlipMutation(probability=1.0 / problem.number_of_variables),
         crossover=SPXCrossover(probability=0.9),
         termination=StoppingByEvaluations(max_evaluations),utopian=utopianPoint,
         referenceFront= calibratedFront
@@ -58,9 +58,10 @@ def main():
     
     numberOfRuns=2
     problemType="dense"
-    numberOfItemsArray=np.array([20,80,320])
-    max_evaluations=50000
-    populationSizes=np.array([4,16,64,128,256])
+    # numberOfItemsArray=np.array([20,80,320])
+    numberOfItemsArray=np.array([160])
+    max_evaluations=30000
+    populationSizes=np.array([80,160,320,640])
     # fig, ax = plt.subplots()
     figureNumber=0
     for numberOfItems in numberOfItemsArray:
@@ -79,31 +80,41 @@ def main():
             HVresult=np.mean(AvgHV, axis=0)
             HVresult=1-HVresult
             IGDResult=np.mean(AvgIGD, axis=0)
-            if(popSize==4):
+            if(popSize==10):
                 plt.figure(figureNumber)
-                plt.loglog(numberOfEvaluations,HVresult, basex=2, basey=2,label='Population Size=4',c='r')
+                plt.loglog(numberOfEvaluations,HVresult, basex=2, basey=2,label='Population Size=10',c='r')
                 plt.figure(figureNumber+1)
-                plt.loglog(numberOfEvaluations,IGDResult, basex=2, basey=2,label='Population Size=4',c='r')
-            if(popSize==16):
+                plt.loglog(numberOfEvaluations,IGDResult, basex=2, basey=2,label='Population Size=10',c='r')
+            if(popSize==20):
                 plt.figure(figureNumber)
-                plt.loglog(numberOfEvaluations,HVresult, basex=2, basey=2,label='Population Size=16',c='b')
+                plt.loglog(numberOfEvaluations,HVresult, basex=2, basey=2,label='Population Size=20',c='b')
                 plt.figure(figureNumber+1)
-                plt.loglog(numberOfEvaluations,IGDResult, basex=2, basey=2,label='Population Size=16',c='b')
-            if(popSize==64):
+                plt.loglog(numberOfEvaluations,IGDResult, basex=2, basey=2,label='Population Size=20',c='b')
+            if(popSize==40):
                 plt.figure(figureNumber)
-                plt.loglog(numberOfEvaluations,HVresult, basex=2, basey=2,label='Population Size=64',c='g')
+                plt.loglog(numberOfEvaluations,HVresult, basex=2, basey=2,label='Population Size=40',c='g')
                 plt.figure(figureNumber+1)
-                plt.loglog(numberOfEvaluations,IGDResult, basex=2, basey=2,label='Population Size=64',c='g')
-            if(popSize==128):
+                plt.loglog(numberOfEvaluations,IGDResult, basex=2, basey=2,label='Population Size=40',c='g')
+            if(popSize==80):
                 plt.figure(figureNumber)
-                plt.loglog(numberOfEvaluations,HVresult, basex=2, basey=2,label='Population Size=128',c='y')
+                plt.loglog(numberOfEvaluations,HVresult, basex=2, basey=2,label='Population Size=80',c='y')
                 plt.figure(figureNumber+1)
-                plt.loglog(numberOfEvaluations,IGDResult, basex=2, basey=2,label='Population Size=128',c='y')
-            if(popSize==256):
+                plt.loglog(numberOfEvaluations,IGDResult, basex=2, basey=2,label='Population Size=80',c='y')
+            if(popSize==160):
                 plt.figure(figureNumber)
-                plt.loglog(numberOfEvaluations,HVresult, basex=2, basey=2,label='Population Size=256',c='m')
+                plt.loglog(numberOfEvaluations,HVresult, basex=2, basey=2,label='Population Size=160',c='m')
                 plt.figure(figureNumber+1)
-                plt.loglog(numberOfEvaluations,IGDResult, basex=2, basey=2,label='Population Size=256',c='m')
+                plt.loglog(numberOfEvaluations,IGDResult, basex=2, basey=2,label='Population Size=160',c='m')
+            if(popSize==320):
+                plt.figure(figureNumber)
+                plt.loglog(numberOfEvaluations,HVresult, basex=2, basey=2,label='Population Size=320',c='r')
+                plt.figure(figureNumber+1)
+                plt.loglog(numberOfEvaluations,IGDResult, basex=2, basey=2,label='Population Size=320',c='r') 
+            if(popSize==640):
+                plt.figure(figureNumber)
+                plt.loglog(numberOfEvaluations,HVresult, basex=2, basey=2,label='Population Size=640',c='b')
+                plt.figure(figureNumber+1)
+                plt.loglog(numberOfEvaluations,IGDResult, basex=2, basey=2,label='Population Size=640',c='b')        
         # plt.get_yaxis().set_major_formatter(mtick.FormatStrFormatter('%.3f'))
         # plt.xticks(np.arange(popSize, max_evaluations, popSize))
         fig=plt.figure(figureNumber)
