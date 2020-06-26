@@ -43,13 +43,12 @@ class MyAlgorithm(SPEA2):
         front = get_non_dominated_solutions(solutions)
         objective1=-1/self.Uobjecive1*np.array([solution.objectives[0] for solution in front])
         objective2=-1/self.Uobjecive2*np.array([solution.objectives[1] for solution in front])
+        objective2=1-objective2
         HV=calculateHypervolume(list(zip(objective1,objective2)))
-        print('Hypervolume;',HV)
         self.hypervolumeByGeneration.append(HV)
         # DO IGD calculation here
         IGD = InvertedGenerationalDistance(self.reference_front)
         igd=IGD.compute(list(zip(-np.array([solution.objectives[0] for solution in front]),-np.array([solution.objectives[1] for solution in front]))))
-        print('IGD1:',igd)
         # obj1front=1/self.Uobjecive1*self.reference_front[:, 0]
         # obj2front=1/self.Uobjecive2*self.reference_front[:,1]
         # igd2 = calculateIGD(list(zip(objective1,objective2)), list(zip(obj1front,obj2front)))

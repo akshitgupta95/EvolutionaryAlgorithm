@@ -23,7 +23,7 @@ def oneRun(problemType,numberOfitems:int, population_size:int,maxEvaluations:int
             calibratedFront = np.asfarray(data[0:], dtype=np.int32)
 
     max_evaluations = maxEvaluations
-    utopianPoint=(np.amax(calibratedFront[:, 0]),np.amax(calibratedFront[:,1]))
+    utopianPoint=(np.amax(calibratedFront[:, 0]),np.amin(calibratedFront[:,1]))
     algorithm = MyAlgorithm(
         problem=problem,
         population_size=population_size,
@@ -57,11 +57,11 @@ def oneRun(problemType,numberOfitems:int, population_size:int,maxEvaluations:int
 def main():
     
     numberOfRuns=2
-    problemType="dense"
+    problemType="sparse"
     # numberOfItemsArray=np.array([20,80,320])
-    numberOfItemsArray=np.array([160])
-    max_evaluations=30000
-    populationSizes=np.array([80,160,320,640])
+    numberOfItemsArray=np.array([10,20,40,80])
+    max_evaluations=1000
+    populationSizes=np.array([10,20,40,80,160])
     # fig, ax = plt.subplots()
     figureNumber=0
     for numberOfItems in numberOfItemsArray:
@@ -80,6 +80,11 @@ def main():
             HVresult=np.mean(AvgHV, axis=0)
             HVresult=1-HVresult
             IGDResult=np.mean(AvgIGD, axis=0)
+            print('problem%s_population%s'%(numberOfItems,popSize))
+            print("HV")
+            print(HVresult)
+            print("IGD")
+            print(IGDResult)
             if(popSize==10):
                 plt.figure(figureNumber)
                 plt.loglog(numberOfEvaluations,HVresult, basex=2, basey=2,label='Population Size=10',c='r')
